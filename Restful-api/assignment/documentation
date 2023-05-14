@@ -1,0 +1,23 @@
+donot forget to add the requierments.txt file that has:
+Flask==2.0.1
+
+1. first pull the docker image from my account
+docker pull sgadyahmed41/assignment-image
+
+2.then build the image
+docker build -t  assignment-image . 
+
+3.now run the image
+docker run -p 5000:5000 assignment-image
+
+4.now test the api with the endpoints using /persons after the link
+To test the GET /persons endpoint, send a GET request to http://localhost:5000/persons. You should receive a JSON response containing a list of persons.
+
+To test the POST /persons endpoint, send a POST request to http://localhost:5000/persons with a JSON payload containing the person's data. You should receive a JSON response containing the person's data.
+
+To test the GET /persons/{id} endpoint, send a GET request to http://localhost:5000/persons/{id} where {id} is the ID of the person you want to retrieve. You should receive a JSON response containing the person's data.
+
+To test the PUT /persons/{id} endpoint, send a PUT request to http://localhost:5000/persons/{id} with a JSON payload containing the person's updated data. You should receive a JSON response containing the updated person's data.
+
+To test the DELETE /persons/{id} endpoint, send a DELETE request to http://localhost:5000/persons/{id} where {id} is the ID of the person you want to delete. You should receive a JSON response indicating whether the deletion was successful or not.
+

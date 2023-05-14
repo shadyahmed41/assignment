@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>frontend app</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      h2 {
+        margin-top: 20px;
+      }
+
+      form {
+        margin-top: 10px;
+      }
+
+      input[type="text"] {
+        width: 200px;
+        padding: 5px;
+        margin-bottom: 10px;
+      }
+
+      button {
+        padding: 5px 10px;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Frontend App</h1>
+
+    <form id="person-form">
+      <h2>Add Person</h2>
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="number" id="age" placeholder="Age" required>
+      <select id="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <input type="email" id="email" placeholder="Email" required>
+      <button type="submit">Add Person</button>
+    </form>
+
+    <h2>Get All Persons</h2>
+    <button id="get-all-persons-button">Get All Persons</button>
+    <ul id="persons-list"></ul>
+
+    <h2>Get Person by ID</h2>
+    <form id="get-person-form">
+      <input type="text" id="get-person-id" placeholder="Person ID" required>
+      <button type="submit">Get Person</button>
+    </form>
+    <div id="get-person-result"></div>
+
+    <h2>Update Person</h2>
+    <form id="update-person-form">
+      <input type="text" id="update-person-id" placeholder="Person ID" required>
+      <input type="text" id="update-person-name" placeholder="Name">
+      <input type="number" id="update-person-age" placeholder="Age">
+      <select id="update-person-gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <input type="email" id="update-person-email" placeholder="Email">
+      <button type="submit">Update Person</button>
+    </form>
+
+    <h2>Delete Person</h2>
+    <form id="delete-person-form">
+      <input type="text" id="delete-person-id" placeholder="Person ID" required>
+      <button type="submit">Delete Person</button>
+    </form>
+
+    <script>
+// java script
+// Get references to the HTML elements
+const personForm = document.getElementById('person-form');
+const getAllPersonsButton = document.getElementById('get-all-persons-button');
+const personsList = document.getElementById('persons-list');
+const getPersonForm = document.getElementById('get-person-form');
+const getPersonIdInput = document.getElementById('get-person-id');
+const getPersonResult = document.getElementById('get-person-result');
+const updatePersonForm = document.getElementById('update-person-form');
+const updatePersonIdInput = document.getElementById('update-person-id');
+const updatePersonNameInput = document.getElementById('update-person-name');
+const updatePersonAgeInput = document.getElementById('update-person-age');
+const updatePersonGenderInput = document.getElementById('update-person-gender');
+const updatePersonEmailInput = document.getElementById('update-person-email');
+const deletePersonForm = document.getElementById('delete-person-form');
+const deletePersonIdInput = document.getElementById('delete-person-id');
+
+// Event listeners
+
+// Add Person
+personForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('name').value;
+  const age = document.getElementById('age').value;
+  const gender = document.getElementById('gender').value;
+  const email = document.getElementById('email').value;
+  
+  const personData = {
+    name,
+    age,
+    gender,
+    email
+  };
+  
+  fetch('http://localhost:5000/persons', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(personData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Person added:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  
+  // Clear the form inputs
+  personForm.reset();
+});
+
+// Get All Persons
+getAllPersonsButton.addEventListener('click', function() {
+  fetch('http://localhost:5000/persons')
+    .then(response => response.json())
+    .then(data => {
+      personsList.innerHTML = '';
+      data.forEach(person => {
+        const listItem = document.createElement('li');
+        listItem.innerText = `ID: ${person.id}, Name: ${person.name}, Age: ${person.age}, Gender: ${person.gender}, Email: ${person.email}`;
+        personsList.appendChild(listItem);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
+
+// Get Person by ID
+getPersonForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const id = getPersonIdInput.value;
+  
+  fetch(`http://localhost:5000/persons/${id}`)
+    .then(response => response.json())
+    .then(data => {
+      getPersonResult.innerText = JSON.stringify(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  
+  // Clear the form input
+  getPersonForm.reset();
+});
+
+// Update Person
+updatePersonForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const id = updatePersonIdInput.value;
+  const name = updatePersonNameInput.value;
+  const age = updatePersonAgeInput.value;
+  const gender = updatePersonGenderInput.value;
+  const email = updatePersonEmailInput.value;
+  
+  const updatedPersonData = {
+    name,
+    age,
+    gender,
+    email
+  };
+  
+  fetch(`http://localhost:5000/persons/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(updatedPersonData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Person updated:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  
+  // Clear the form inputs
+  updatePersonForm.reset();
+});
+
+// Delete Person
+deletePersonForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const id = deletePersonIdInput.value;
+  
+  fetch(`http://localhost:5000/persons/${id}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Person deleted:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  
+  // Clear the form input
+  deletePersonForm.reset();
+});
+
+    </script>
+  </body>
+</html>
