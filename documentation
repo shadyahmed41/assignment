@@ -1,0 +1,3 @@
+1. docker-compose up       this will run the images
+2. test the front end by going to localhost:80
+3. https://hub.docker.com/r/sgadyahmed41/frontend-restfulapi      this is the dockerhub Repository that contain the frontend and the backend. 
